@@ -12,7 +12,7 @@ func main() {
 	lis, err := net.Listen("tcp", "localhost:50051")
 
 	if err != nil {
-		log.Fatalf("Servidor não está onlione!")
+		log.Fatalf("Servidor não está onlione!: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()

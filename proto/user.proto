@@ -9,5 +9,5 @@ message User {
 }
 
 service UserService {
-    rpc Adduser (User) returns (User);
+    rpc AddUser (User) returns (User);
 }

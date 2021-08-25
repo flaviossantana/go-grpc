@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	Adduser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 }
 
 type userServiceClient struct {
@@ -29,9 +29,9 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) Adduser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *userServiceClient) AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/pb.UserService/Adduser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.UserService/AddUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *userServiceClient) Adduser(ctx context.Context, in *User, opts ...grpc.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	Adduser(context.Context, *User) (*User, error)
+	AddUser(context.Context, *User) (*User, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -50,8 +50,8 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) Adduser(context.Context, *User) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Adduser not implemented")
+func (UnimplementedUserServiceServer) AddUser(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -66,20 +66,20 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 	s.RegisterService(&UserService_ServiceDesc, srv)
 }
 
-func _UserService_Adduser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).Adduser(ctx, in)
+		return srv.(UserServiceServer).AddUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.UserService/Adduser",
+		FullMethod: "/pb.UserService/AddUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Adduser(ctx, req.(*User))
+		return srv.(UserServiceServer).AddUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,8 +92,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Adduser",
-			Handler:    _UserService_Adduser_Handler,
+			MethodName: "AddUser",
+			Handler:    _UserService_AddUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

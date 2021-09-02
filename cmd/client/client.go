@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"log"
 
 	"github.com/flaviossantana/go-grpc/pb"
@@ -19,7 +21,8 @@ func main() {
 	defer connection.Close()
 
 	client := pb.NewUserServiceClient(connection)
-	AddUser(client)
+	//AddUser(client)
+	AddUserVerbose(client)
 
 }
 
@@ -38,5 +41,36 @@ func AddUser(client pb.UserServiceClient) {
 	}
 
 	log.Println(res)
+
+}
+
+func AddUserVerbose(client pb.UserServiceClient) {
+
+	req := &pb.User{
+		Id:    "0",
+		Name:  "Flávio Santana",
+		Email: "flavaio@santana.com",
+	}
+
+	resStream, err := client.AddUserVerbose(context.Background(), req)
+
+	if err != nil {
+		log.Fatalf("Não foi possivel adicionar usuário: %v", err)
+	}
+
+	for {
+		stream, err := resStream.Recv()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalf("Não pode receber a MSG: %v", err)
+		}
+
+		fmt.Println("Status: ", stream.Status, " - ", stream.GetUser())
+
+	}
 
 }

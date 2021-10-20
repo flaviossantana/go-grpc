@@ -100,3 +100,28 @@ func (*UserService) AddUsers(stream pb.UserService_AddUsersServer) error {
 	}
 
 }
+
+func (*UserService) AddUsersStream(stream pb.UserService_AddUsersStreamServer) error {
+	for {
+		req, err := stream.Recv()
+
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			log.Fatalf("Erro ao receber o stream de User %v", err)
+
+		}
+
+		err = stream.Send(&pb.UserResultStream{
+			Status: "201",
+			User:   req,
+		})
+
+		if err != nil {
+			log.Fatalf("Erro ao enviar o stream de User %v", err)
+
+		}
+	}
+}

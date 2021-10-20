@@ -24,7 +24,8 @@ func main() {
 	client := pb.NewUserServiceClient(connection)
 	//AddUser(client)
 	//AddUserVerbose(client)
-	AddUsers(client)
+	//AddUsers(client)
+	AddUsersStream(client)
 
 }
 
@@ -79,7 +80,77 @@ func AddUserVerbose(client pb.UserServiceClient) {
 
 func AddUsers(client pb.UserServiceClient) {
 
-	reqs := []*pb.User{
+	reqs := usuarios()
+
+	stream, err := client.AddUsers(context.Background())
+
+	if err != nil {
+		log.Fatalf("Erro ao criar requisição de Usuário %v", err)
+	}
+
+	for _, req := range reqs {
+		stream.Send(req)
+		fmt.Println("Enviando a requisição do ", req.Name)
+		time.Sleep(time.Second * 3)
+	}
+
+	res, err := stream.CloseAndRecv()
+
+	if err != nil {
+		log.Fatalf("Erro ao receber resposta de Usuário %v", err)
+	}
+
+	fmt.Println(res)
+
+}
+
+func AddUsersStream(client pb.UserServiceClient) {
+
+	reqs := usuarios()
+
+	stream, err := client.AddUsersStream(context.Background())
+
+	if err != nil {
+		log.Fatalf("Erro ao criar a requisição do Usuário: %v", err)
+	}
+
+	wait := make(chan int)
+
+	go func() {
+		for _, req := range reqs {
+			fmt.Println("Enviando Usuário no Cliente: ", req.Name)
+			stream.Send(req)
+			time.Sleep(time.Second * 2)
+		}
+		stream.CloseSend()
+	}()
+
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+
+			if err != nil {
+				log.Fatalf("Erro ao Receber Usuário do Servidor %v", err)
+				break
+			}
+
+			fmt.Printf("Recebendo Usuário no Cliente: %v STATUS: %v\n", res.GetUser().GetName(), res.GetStatus())
+
+		}
+
+		close(wait)
+
+	}()
+
+	<-wait
+
+}
+
+func usuarios() []*pb.User {
+	return []*pb.User{
 		{
 			Id:    "1",
 			Name:  "Jão Da Silva",
@@ -106,25 +177,4 @@ func AddUsers(client pb.UserServiceClient) {
 			Email: "juzeo@email.com",
 		},
 	}
-
-	stream, err := client.AddUsers(context.Background())
-
-	if err != nil {
-		log.Fatalf("Erro ao criar requisição de Usuário %v", err)
-	}
-
-	for _, req := range reqs {
-		stream.Send(req)
-		fmt.Println("Enviando a requisição do ", req.Name)
-		time.Sleep(time.Second * 3)
-	}
-
-	res, err := stream.CloseAndRecv()
-
-	if err != nil {
-		log.Fatalf("Erro ao receber resposta de Usuário %v", err)
-	}
-
-	fmt.Println(res)
-
 }

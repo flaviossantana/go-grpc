@@ -105,6 +105,8 @@ func (*UserService) AddUsersStream(stream pb.UserService_AddUsersStreamServer) e
 	for {
 		req, err := stream.Recv()
 
+		fmt.Println("Recebendo Usuário no Servidor: ", req.Name)
+
 		if err == io.EOF {
 			return nil
 		}
@@ -120,7 +122,7 @@ func (*UserService) AddUsersStream(stream pb.UserService_AddUsersStreamServer) e
 		})
 
 		if err != nil {
-			log.Fatalf("Erro ao enviar o stream de User %v", err)
+			log.Fatalf("Erro ao enviar o stream de User %v\n", err)
 
 		}
 	}

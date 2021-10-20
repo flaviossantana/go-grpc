@@ -104,10 +104,10 @@ Rodando o nosso servidor:
  pb.UserService@localhost:50051> call AddUser
    id (TYPE_STRING) => 0
    name (TYPE_STRING) => Flavio Santana
-   email (TYPE_STRING) => 9090falvio@gmai.com
+   email (TYPE_STRING) => flavio@fmai.com
    {
      "id": "2312",
-     "email": "9090falvio@gmai.com",    
+     "email": "flavio@fmai.com",    
      "name": "Flavio Santana"
    }
  

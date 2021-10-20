@@ -48,8 +48,7 @@ Criando o modulo do projeto:
 go: creating new go.mod: module github.com/flaviossantana/go-grpc
 
 ```
-Instalando compilador protoc:
-https://grpc.io/docs/protoc-installation/
+[Instalando compilador protoc](https://grpc.io/docs/protoc-installation/)
 
 MacOS, usando o Homebrew:
 ```bash 
@@ -86,8 +85,7 @@ Rodando o nosso servidor:
  % go run cmd/server/server.go
 ```
 
-Testando as chamadas gRPC via Evans:
-https://github.com/ktr0731/evans#not-recommended-go-get
+[Testando as chamadas gRPC via Evans](https://github.com/ktr0731/evans#not-recommended-go-get)
 ```bash 
  $ go get github.com/ktr0731/evans
  $ go install github.com/ktr0731/evans

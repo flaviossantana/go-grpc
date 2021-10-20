@@ -48,7 +48,69 @@ Criando o modulo do projeto:
 go: creating new go.mod: module github.com/flaviossantana/go-grpc
 
 ```
+Instalando compilador protoc:
+https://grpc.io/docs/protoc-installation/
 
+MacOS, usando o Homebrew:
+```bash 
+$ brew install protobuf
+$ protoc --version  # Ensure com piler version is 3+
 
+% protoc --version
+libprotoc 3.17.3
+```
 
+Para finalizar, temos que adicionar a pasta "/go/bin" no PATH para que tudo que seja instalado nesta pasta esteja disponível 
+como comandos no terminal.
+```bash
+export PATH="$PATH:/Users/flaviosantana/go/bin"
+```
 
+Execute o comando abaixo para atualizar seu terminal:
+```bash
+% source ~/.zprofile
+```
+
+Compilando o meu arquivo .proto:
+```bash
+% protoc --proto_path=proto proto/*.proto --go_out=pb
+```
+
+Gerar meu stub de grpc:
+```bash
+% protoc --proto_path=proto proto/*.proto --go_out=pb --go-grpc_out=pb
+ ```
+
+Rodando o nosso servidor:
+```bash 
+ % go run cmd/server/server.go
+```
+
+Testando as chamadas gRPC via Evans:
+https://github.com/ktr0731/evans#not-recommended-go-get
+```bash 
+ $ go get github.com/ktr0731/evans
+ $ go install github.com/ktr0731/evans
+ evans -r repl --host localhost --port 50051
+ 
+   ______
+  |  ____|
+  | |__    __   __   __ _   _ __    ___
+  |  __|   \ \ / /  / _. | | '_ \  / __|
+  | |____   \ V /  | (_| | | | | | \__ \
+  |______|   \_/    \__,_| |_| |_| |___/
+ 
+  more expressive universal gRPC client
+ 
+ pb.UserService@localhost:50051> service UserServicer 
+ pb.UserService@localhost:50051> call AddUser
+   id (TYPE_STRING) => 0
+   name (TYPE_STRING) => Flavio Santana
+   email (TYPE_STRING) => 9090falvio@gmai.com
+   {
+     "id": "2312",
+     "email": "9090falvio@gmai.com",    
+     "name": "Flavio Santana"
+   }
+ 
+ ```
